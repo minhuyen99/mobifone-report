@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge"
+    >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Export Report Mobifone</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <label for="month">Tháng:</label>
+    <input
+        type="number"
+        id="month"
+        name="month"
+    ><br><br>
+    <label for="year">Năm:</label>
+    <input
+        type="number"
+        id="year"
+        name="year"
+    ><br><br>
+    <a
+        id="link"
+        href="#"
+    > Xuất báo cáo </a><br><br>
+    <label for="file">Downloading progress:</label>
+    <progress
+        id="file"
+        value="0"
+        max="100"
+    > 0% </progress>
+</body>
+<script>
+
+    $("#link").click((e) => {
+        let month = $('#month')[0].value
+        let year = $('#year')[0].value
+
+        console.log(month, year);
+
+        // $.get(`http://localhost:8686/api/report?month=${month}&year=${year}`, (data, status) => {
+        //     console.log(data, status);
+        //     e.preventDefault();
+        //     download("../server/data-mobifone-${month}-${year}.xlsx", "data-mobifone-${month}-${year}.xlsx");
+
+        //     // if (data) {
+        //     //     console.log('123');
+        //     //     window.location.assign(`../server/data-mobifone-${month}-${year}.xlsx`)
+        //     //     console.log('456');
+        //     // }
+        // });
+
+        // fetch(`http://localhost:8686/api/report?month=${month}&year=${year}`)
+        //     .then(data => {
+        //         console.log(data)
+
+        //         // window.location.assign(`../server/data-mobifone-${month}-${year}.xlsx`)
+
+        //         // window.location.href = `../server/data-mobifone-${month}-${year}.xlsx`
+        //         setTimeout(() => {
+        //             window.location.href = window.location.href.replace('index.html', `server/data-mobifone-${month}-${year}.xlsx`)
+        //             console.log(window.location.href);
+        //             alert('success')
+        //         }, 5000)
+
+        //     })
+
+        axios.get(`http://localhost:8686/api/report?month=1&year=2022`)
+            .then(function (response) {
+                console.log(response);
+                window.location.href = window.location.href.replace('index.html', `server/data-mobifone-1-2022.xlsx`)
+                console.log(window.location.href);
+                window.location.href = window.location.href.replace('index.html', `server/data-mobifone-1-2022.xlsx`)
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+    });
+</script>
+
+</html>
