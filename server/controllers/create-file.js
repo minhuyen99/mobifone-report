@@ -129,7 +129,7 @@ exports.CreateFile = async (req, res) => {
         ws4.cell(i + 2, 8).string(result[i]['Name'])
         ws4.cell(i + 2, 9).string(result[i]['Description'] == null ? '' : result[i]['Description'])
         ws4.cell(i + 2, 10).date(result[i]['CreatedOn'])
-        ws4.cell(i + 2, 11).date(result[i]['UpdatedOn'])
+        ws4.cell(i + 2, 11).date(result[i]['UpdatedOn'] == null ? new Date() : result[i]['UpdatedOn'])
     }
 
     // wb.write(`data-mobifone-${month}-${year}.xlsx`)

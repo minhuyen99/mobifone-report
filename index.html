@@ -15,6 +15,87 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js"></script>
 </head>
+<style>
+    /* #loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 120px;
+        height: 120px;
+        margin: -76px 0 0 -76px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+        visibility: hidden;
+    }
+
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 1s
+    }
+
+    @-webkit-keyframes animatebottom {
+        from {
+            bottom: -100px;
+            opacity: 0
+        }
+
+        to {
+            bottom: 0px;
+            opacity: 1
+        }
+    }
+
+    @keyframes animatebottom {
+        from {
+            bottom: -100px;
+            opacity: 0
+        }
+
+        to {
+            bottom: 0;
+            opacity: 1
+        }
+    }
+
+    p {
+        visibility: hidden;
+    } */
+    #myBar {
+        width: 0%;
+        height: 30px;
+        background-color: #04AA6D;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+    }
+</style>
 
 <body>
     <label for="month">Tháng:</label>
@@ -29,17 +110,48 @@
         id="year"
         name="year"
     ><br><br>
-    <button id="create"> Tạo báo cáo </button><br><br>
-    <!-- <label for="file">Downloading progress:</label>
-    <progress
-        id="file"
-        value="0"
-        max="100"
-    > 0% </progress> -->
+    <button id="create"> Xuất báo cáo </button><br><br>
+    <div id="myProgress">
+        <div id="myBar">0%</div>
+    </div>
+    <!-- <div id="loader"></div> -->
+    <!-- <p>Vui lòng chờ khoảng 30 giây ...</p> -->
 </body>
 <script>
+    var i = 0;
+    var done = false
+
+    function move() {
+        if (i == 0) {
+            i = 1;
+            var elem = document.getElementById("myBar");
+            var width = 0;
+            var id = setInterval(frame, 300);
+
+            function frame() {
+                if (done) {
+                    width = 100
+                    elem.style.width = width + "%";
+                    elem.innerHTML = width + "%";
+                }
+                if (width >= 100) {
+                    clearInterval(id);
+                    i = 0;
+                    console.log(new Date());
+                } else {
+                    if (!done && width !== 100) {
+                        width++;
+                        elem.style.width = width + "%";
+                        elem.innerHTML = width + "%";
+                    }
+                }
+            }
+        }
+
+    }
 
     function downloadFile(data, fileName) {
+
         var a = document.createElement("a");
         var mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
         a.href = mediaType + data
@@ -47,6 +159,7 @@
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+
     }
 
     function makeGetRequest(path) {
@@ -67,6 +180,11 @@
     async function main(month, year) {
         var result = await makeGetRequest(`http://localhost:8686/api/report?month=${month}&year=${year}`);
         downloadFile(result, `data-${month}-${year}`)
+        done = true
+        console.log(done);
+
+        // $("#loader").css({ 'visibility': 'hidden' })
+        // $('p').css({ 'visibility': 'hidden' })
     }
 
 
@@ -76,9 +194,16 @@
             let month = $('#month')[0].value
             let year = $('#year')[0].value
 
-            console.log(month, year);
+            if (month === '' || year === '') {
+                alert('Bạn phải nhập tháng và năm')
+            }
 
-            main(month, year)
+            if (month !== '' && year !== '') {
+                // $('p').css({ 'visibility': 'visible' })
+                // $("#loader").css({ 'visibility': 'visible' })
+                move()
+                main(month, year)
+            }
 
         });
     })

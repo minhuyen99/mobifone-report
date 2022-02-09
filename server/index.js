@@ -17,8 +17,6 @@ app.get('/hello', (req, res) => {
     res.send('Hello world!!!')
 })
 
-
-
 app.listen(8686, () => {
     console.log('Server is running at 8686 ...');
 })
