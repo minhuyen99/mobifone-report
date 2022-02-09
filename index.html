@@ -137,9 +137,9 @@
                 if (width >= 100) {
                     clearInterval(id);
                     i = 0;
-                    console.log(new Date());
+
                 } else {
-                    if (!done && width !== 100) {
+                    if (!done && width < 99) {
                         width++;
                         elem.style.width = width + "%";
                         elem.innerHTML = width + "%";
@@ -157,9 +157,10 @@
         a.href = mediaType + data
         a.download = fileName + ".xlsx";
         document.body.appendChild(a);
+        done = true
         a.click();
         document.body.removeChild(a);
-
+        window.location.reload()
     }
 
     function makeGetRequest(path) {
@@ -178,10 +179,9 @@
     }
 
     async function main(month, year) {
-        var result = await makeGetRequest(`http://localhost:8686/api/report?month=${month}&year=${year}`);
+        var result = await makeGetRequest(`http://192.168.1.134:8686/api/report?month=${month}&year=${year}`);
         downloadFile(result, `data-${month}-${year}`)
-        done = true
-        console.log(done);
+
 
         // $("#loader").css({ 'visibility': 'hidden' })
         // $('p').css({ 'visibility': 'hidden' })
@@ -194,8 +194,8 @@
             let month = $('#month')[0].value
             let year = $('#year')[0].value
 
-            if (month === '' || year === '') {
-                alert('Bạn phải nhập tháng và năm')
+            if (month === '' || year === '' || month < 0 || year < 0) {
+                alert('Bạn phải nhập tháng và năm dương')
             }
 
             if (month !== '' && year !== '') {

@@ -64,7 +64,7 @@ exports.GetReportSubServiceByMonth = async () => {
 
         let result = await pool
             .request()
-            .query("select * from dbo.SubServices where Status <> 0");
+            .query("select SubServiceId, Agency, Source, Maintainer,  MaintainerRepresentative, CustomerServiceRepresentative, URL, Name, Description, convert(varchar(19), CreatedOn) as CreatedOn,  convert(varchar(19), UpdatedOn) as UpdatedOn from dbo.SubServices where Status <> 0");
 
         pool.close();
         return result.recordset

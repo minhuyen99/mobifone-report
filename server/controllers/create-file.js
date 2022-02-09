@@ -79,7 +79,7 @@ exports.CreateFile = async (req, res) => {
         ws.cell(i + 2, 8).string(result[i]['District'])
         ws.cell(i + 2, 9).string(result[i]['Ward'] == null ? '' : result[i]['Ward'])
         ws.cell(i + 2, 10).string(result[i]['Delivered'] == null ? '' : result[i]['Delivered'])
-        ws.cell(i + 2, 11).date(result[i]['CreatedOn'])
+        ws.cell(i + 2, 11).string(result[i]['CreatedOn'])
         ws.cell(i + 2, 12).string(result[i]['CreatedBy'] == null ? '' : result[i]['CreatedBy'])
     }
 
@@ -95,7 +95,7 @@ exports.CreateFile = async (req, res) => {
         ws2.cell(i + 2, 8).string(result[i]['District'])
         ws2.cell(i + 2, 9).string(result[i]['Ward'] == null ? '' : result[i]['Ward'])
         ws2.cell(i + 2, 10).string(result[i]['Delivered'] == null ? '' : result[i]['Delivered'])
-        ws2.cell(i + 2, 11).date(result[i]['CreatedOn'])
+        ws2.cell(i + 2, 11).string(result[i]['CreatedOnString'])
         ws2.cell(i + 2, 12).string(result[i]['CreatedBy'] == null ? '' : result[i]['CreatedBy'])
     }
 
@@ -114,7 +114,7 @@ exports.CreateFile = async (req, res) => {
         ws3.cell(i + 2, 11).string(result[i]['ProcessingStatus'])
         ws3.cell(i + 2, 12).string(result[i]['ProcessingContent'] == null ? '' : result[i]['ProcessingContent'])
         ws3.cell(i + 2, 13).string(result[i]['Proof'] == null ? '' : result[i]['Proof'])
-        ws3.cell(i + 2, 14).date(result[i]['CreatedOn'])
+        ws3.cell(i + 2, 14).string(result[i]['CreatedOnString'])
     }
 
     result = await GetReportSubServiceByMonth()
@@ -128,8 +128,8 @@ exports.CreateFile = async (req, res) => {
         ws4.cell(i + 2, 7).string(result[i]['URL'] == null ? '' : result[i]['URL'])
         ws4.cell(i + 2, 8).string(result[i]['Name'])
         ws4.cell(i + 2, 9).string(result[i]['Description'] == null ? '' : result[i]['Description'])
-        ws4.cell(i + 2, 10).date(result[i]['CreatedOn'])
-        ws4.cell(i + 2, 11).date(result[i]['UpdatedOn'] == null ? new Date() : result[i]['UpdatedOn'])
+        ws4.cell(i + 2, 10).string(result[i]['CreatedOn'])
+        ws4.cell(i + 2, 11).string(result[i]['UpdatedOn'] == null ? '' : result[i]['UpdatedOn'])
     }
 
     // wb.write(`data-mobifone-${month}-${year}.xlsx`)
