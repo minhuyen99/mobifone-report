@@ -13,9 +13,11 @@ app.use(cors(corsOptions))
 
 app.use('/api', serviceRoute)
 
-app.get('/api/hello', (req, res) => {
+app.get('/hello', (req, res) => {
     res.send('Hello world!!!')
 })
+
+
 
 app.listen(8686, () => {
     console.log('Server is running at 8686 ...');

@@ -9,13 +9,78 @@
     >
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=\, initial-scale=1.0"
     >
-    <title>Document</title>
+    <title>Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js"></script>
 </head>
 
 <body>
-    <h1>Test</h1>
+    <form id="loginForm">
+        <input
+            type="text"
+            value="Hello there"
+        >
+        <input
+            type="submit"
+            value="Go"
+        >
+    </form>
 </body>
+<script>
+
+    function doesFileExist(urlToFile) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('HEAD', urlToFile, false);
+        xhr.send();
+
+        if (xhr.status == "404") {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function downloadFile(data, fileName) {
+        var a = document.createElement("a");
+        var mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
+        a.href = mediaType + data
+        a.download = fileName + ".xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function makeGetRequest(path) {
+        return new Promise(function (resolve, reject) {
+            axios.get(path).then(
+                (response) => {
+                    var result = response.data;
+                    console.log('Processing Request');
+                    resolve(result);
+                },
+                (error) => {
+                    reject(error);
+                }
+            );
+        });
+    }
+
+    async function main() {
+        var result = await makeGetRequest('http://localhost:8686/api/report?month=1&year=2022');
+        downloadFile(result, 'data')
+
+        console.log('Statement 2');
+    }
+
+    $('#loginForm').submit(function (e) {
+        e.preventDefault();
+
+        main()
+
+    });
+
+</script>
 
 </html>
