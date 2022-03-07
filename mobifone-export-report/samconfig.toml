@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "mobifone-export-report"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-rhzyqeqaei1g"
+s3_prefix = "mobifone-export-report"
+region = "ap-southeast-1"
+profile = "ci.uyen.cdm"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
