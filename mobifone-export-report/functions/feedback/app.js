@@ -9,19 +9,25 @@ const config = {
 };
 
 exports.lambdaHandler = async (event, context) => {
-    var response, month = event.queryStringParameters.month, year = event.queryStringParameters.year;
+    // var response, month = event.queryStringParameters.month, year = event.queryStringParameters.year;
+    var response;
     try {
         let pool = await sql.connect(config);
         let result = await pool
             .request()
-            .input("month", sql.Int, month)
-            .input("year", sql.Int, year)
+            .input("month", sql.Int, event.month)
+            .input("year", sql.Int, event.year)
             .execute("dbo.spGetReportFeedbackByMonth");
         pool.close();
 
         response = {
-            'statusCode': 200,
-            'body': JSON.stringify({
+            statusCode: 200,
+            // headers: {
+            //     "Access-Control-Allow-Headers": "Content-Type",
+            //     "Access-Control-Allow-Origin": "*",
+            //     "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT",
+            // },
+            body: JSON.stringify({
                 payload: result.recordset,
             })
         }
@@ -29,6 +35,5 @@ exports.lambdaHandler = async (event, context) => {
         console.log(err);
         return err;
     }
-
     return response
 };

@@ -23,8 +23,13 @@ exports.lambdaHandler = async (event, context) => {
         pool.close();
 
         response = {
-            'statusCode': 200,
-            'body': JSON.stringify({
+            statusCode: 200,
+            // headers: {
+            //     "Access-Control-Allow-Headers": "Content-Type",
+            //     "Access-Control-Allow-Origin": "*",
+            //     "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT",
+            // },
+            body: JSON.stringify({
                 payload: result.recordset,
             })
         }
