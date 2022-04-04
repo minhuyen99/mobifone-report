@@ -14,6 +14,10 @@
     <title>Export Report Mobifone</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js"></script>
+    <script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"
+    ></script>
 </head>
 <style>
     #myBar {
@@ -45,6 +49,7 @@
     </div>
 </body>
 <script>
+
     var i = 0;
     var done = false
 
@@ -53,7 +58,7 @@
             i = 1;
             var elem = document.getElementById("myBar");
             var width = 0;
-            var id = setInterval(frame, 300);
+            var id = setInterval(frame, 600);
 
             function frame() {
                 if (done) {
@@ -77,39 +82,48 @@
 
     }
 
-    function downloadFile(data, fileName) {
-
+    function downloadFile(fileName) {
         var a = document.createElement("a");
-        var mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
-        a.href = mediaType + data
-        a.download = fileName + ".xlsx";
+        a.download = fileName
         document.body.appendChild(a);
         done = true
         a.click();
         document.body.removeChild(a);
-        window.location.reload()
+        // window.location.reload()
     }
 
-    function makeGetRequest(path) {
-        return new Promise(function (resolve, reject) {
-            axios.get(path).then(
-                (response) => {
-                    var result = response.data;
-                    console.log('Processing Request');
-                    resolve(result);
-                },
-                (error) => {
-                    reject(error);
-                }
-            );
-        });
+    function CreateFile(file_name, data_excel) {
+        var wb = XLSX.utils.book_new();
+        let ws_vncert = XLSX.utils.json_to_sheet(data_excel.VNCert);
+        let ws_feedback = XLSX.utils.json_to_sheet(data_excel.Feedback);
+        let ws_subsidiary = XLSX.utils.json_to_sheet(data_excel.Subsidiary);
+        let ws_subservice = XLSX.utils.json_to_sheet(data_excel.Subservice);
+
+        XLSX.utils.book_append_sheet(wb, ws_vncert, "VNCert");
+        XLSX.utils.book_append_sheet(wb, ws_feedback, "Hỗ trợ CTKV");
+        XLSX.utils.book_append_sheet(wb, ws_subsidiary, "Hỗ trợ 3 cty con");
+        XLSX.utils.book_append_sheet(wb, ws_subservice, "Cổng thông tin");
+        XLSX.writeFile(wb, file_name);
     }
+
 
     async function main(month, year) {
-        var result = await makeGetRequest(`http://192.168.1.134:8686/api/report?month=${month}&year=${year}`);
-        downloadFile(result, `data-${month}-${year}`)
-    }
+        let file_name = "data.xlsx", data = {}
+        let vncert = await axios.get(`https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/vncert?month=${month}&year=${year}`)
+        let feedback = await axios.get(`https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/feedback?month=${month}&year=${year}`)
+        let subsidiary = await axios.get(`https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/subsidiary?month=${month}&year=${year}`)
+        let subservice = await axios.get(`https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/subservice?month=${month}&year=${year}`)
 
+        console.log(vncert);
+
+        data.VNCert = vncert.data.Payload
+        data.Feedback = feedback.data.Payload
+        data.Subsidiary = subsidiary.data.Payload
+        data.Subservice = subservice.data.Payload
+
+        CreateFile(file_name, data)
+        downloadFile(file_name)
+    }
 
     $(document).ready(function () {
         $("#create").click((e) => {
@@ -125,7 +139,6 @@
                 move()
                 main(month, year)
             }
-
         });
     })
 
