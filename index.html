@@ -1,140 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge"
+    />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
     <title>Export Report Mobifone</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js"></script>
     <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"
     ></script>
-
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous"
     />
-  </head>
-  <style>
-    #myBar {
-      width: 0%;
-      height: 30px;
-      background-color: #04aa6d;
-      text-align: center;
-      line-height: 30px;
-      color: white;
+</head>
+<style>
+    .container {
+        margin-top: 100px;
     }
-  </style>
 
-  <body>
-    <label for="month">Tháng:</label>
-    <input type="number" id="month" name="month" /><br /><br />
-    <label for="year">Năm:</label>
-    <input type="number" id="year" name="year" /><br /><br />
-    <button class="btn btn-primary" id="create">Xuất báo cáo</button
-    ><br /><br />
-    <div id="myProgress">
-      <div id="myBar">0%</div>
+    #myBar {
+        margin-top: 100px;
+        width: 0%;
+        height: 30px;
+        background-color: #04aa6d;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <label for="month">Tháng:</label>
+            <input
+                type="number"
+                id="month"
+                name="month"
+                class="form-control"
+            /><br /><br />
+            <label for="year">Năm:</label>
+            <input
+                type="number"
+                id="year"
+                name="year"
+                class="form-control"
+            /><br /><br />
+            <button
+                class="btn btn-primary"
+                id="create"
+            >Xuất báo cáo</button><br /><br />
+        </div>
     </div>
-  </body>
-  <script>
+    <div id="myProgress">
+        <div id="myBar">0%</div>
+    </div>
+</body>
+<script>
     var i = 0;
     var done = false;
 
     function move() {
-      if (i == 0) {
-        i = 1;
-        var elem = document.getElementById("myBar");
-        var width = 0;
-        var id = setInterval(frame, 600);
+        if (i == 0) {
+            i = 1;
+            var elem = document.getElementById("myBar");
+            var width = 0;
+            var id = setInterval(frame, 600);
 
-        function frame() {
-          if (done) {
-            width = 100;
-            elem.style.width = width + "%";
-            elem.innerHTML = width + "%";
-          }
-          if (width >= 100) {
-            clearInterval(id);
-            i = 0;
-          } else {
-            if (!done && width < 99) {
-              width++;
-              elem.style.width = width + "%";
-              elem.innerHTML = width + "%";
+            function frame() {
+                if (done) {
+                    width = 100;
+                    elem.style.width = width + "%";
+                    elem.innerHTML = width + "%";
+                }
+                if (width >= 100) {
+                    elem.style.width = 0
+                    clearInterval(id);
+                    i = 0;
+                } else {
+                    if (!done) {
+                        width++;
+                        elem.style.width = width + "%";
+                        elem.innerHTML = width + "%";
+                    }
+                }
             }
-          }
         }
-      }
     }
 
     function downloadFile(fileName) {
-      var a = document.createElement("a");
-      a.download = fileName;
-      document.body.appendChild(a);
-      done = true;
-      a.click();
-      document.body.removeChild(a);
-      // window.location.reload()
+        var a = document.createElement("a");
+        a.download = fileName;
+        document.body.appendChild(a);
+        done = true;
+        a.click();
+        document.body.removeChild(a);
     }
 
     function CreateFile(file_name, data_excel) {
-      var wb = XLSX.utils.book_new();
-      let ws_vncert = XLSX.utils.json_to_sheet(data_excel.VNCert);
-      let ws_feedback = XLSX.utils.json_to_sheet(data_excel.Feedback);
-      let ws_subsidiary = XLSX.utils.json_to_sheet(data_excel.Subsidiary);
-      let ws_subservice = XLSX.utils.json_to_sheet(data_excel.Subservice);
+        var wb = XLSX.utils.book_new();
+        let ws_vncert = XLSX.utils.json_to_sheet(data_excel.VNCert);
+        let ws_feedback = XLSX.utils.json_to_sheet(data_excel.Feedback);
+        let ws_subsidiary = XLSX.utils.json_to_sheet(data_excel.Subsidiary);
+        let ws_subservice = XLSX.utils.json_to_sheet(data_excel.Subservice);
 
-      XLSX.utils.book_append_sheet(wb, ws_vncert, "VNCert");
-      XLSX.utils.book_append_sheet(wb, ws_feedback, "Hỗ trợ CTKV");
-      XLSX.utils.book_append_sheet(wb, ws_subsidiary, "Hỗ trợ 3 cty con");
-      XLSX.utils.book_append_sheet(wb, ws_subservice, "Cổng thông tin");
-      XLSX.writeFile(wb, file_name);
+        XLSX.utils.book_append_sheet(wb, ws_vncert, "VNCert");
+        XLSX.utils.book_append_sheet(wb, ws_feedback, "Hỗ trợ CTKV");
+        XLSX.utils.book_append_sheet(wb, ws_subsidiary, "Hỗ trợ 3 cty con");
+        XLSX.utils.book_append_sheet(wb, ws_subservice, "Cổng thông tin");
+        XLSX.writeFile(wb, file_name);
     }
 
     async function main(month, year) {
-      let file_name = "data.xlsx",
-        data = {};
-      let vncert = await axios.get(
-        `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/vncert?month=${month}&year=${year}`
-      );
-      let feedback = await axios.get(
-        `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/feedback?month=${month}&year=${year}`
-      );
-      let subsidiary = await axios.get(
-        `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/subsidiary?month=${month}&year=${year}`
-      );
-      let subservice = await axios.get(
-        `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/subservice?month=${month}&year=${year}`
-      );
+        let file_name = "data.xlsx",
+            data = {};
+        let vncert = await axios.get(
+            `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/vncert?month=${month}&year=${year}`
+        );
+        let feedback = await axios.get(
+            `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/feedback?month=${month}&year=${year}`
+        );
+        let subsidiary = await axios.get(
+            `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/subsidiary?month=${month}&year=${year}`
+        );
+        let subservice = await axios.get(
+            `https://1vvdh496sb.execute-api.ap-southeast-1.amazonaws.com/Prod/api/export/subservice?month=${month}&year=${year}`
+        );
 
-      data.VNCert = vncert.data.Payload;
-      data.Feedback = feedback.data.Payload;
-      data.Subsidiary = subsidiary.data.Payload;
-      data.Subservice = subservice.data.Payload;
+        data.VNCert = vncert.data.Payload;
+        data.Feedback = feedback.data.Payload;
+        data.Subsidiary = subsidiary.data.Payload;
+        data.Subservice = subservice.data.Payload;
 
-      CreateFile(file_name, data);
-      downloadFile(file_name);
+        CreateFile(file_name, data);
+        downloadFile(file_name);
     }
 
     $(document).ready(function () {
-      $("#create").click((e) => {
-        let month = $("#month")[0].value;
-        let year = $("#year")[0].value;
+        $("#create").click((e) => {
+            let month = $("#month")[0].value;
+            let year = $("#year")[0].value;
 
-        if (month === "" || year === "" || month < 0 || year < 0) {
-          alert("Bạn phải nhập tháng và năm dương");
-        }
+            if (month === "" || year === "" || month < 0 || year < 0) {
+                alert("Bạn phải nhập tháng và năm dương");
+            }
 
-        if (month !== "" && year !== "") {
-          move();
-          main(month, year);
-        }
-      });
+            if (month !== "" && year !== "") {
+                move();
+                main(month, year);
+            }
+        });
     });
-  </script>
+</script>
+
 </html>
